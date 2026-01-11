@@ -1,73 +1,37 @@
-# React + TypeScript + Vite
+# Common Utils Project (범용 유틸리티 프로젝트)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## 📝 개요
 
-Currently, two official plugins are available:
+이 프로젝트는 React, TypeScript, Vite를 사용하여 만들어진 웹 기반 유틸리티 모음입니다. 현재는 텍스트 케이스 변환 기능을 제공하고 있습니다.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## ✨ 주요 기능
 
-## React Compiler
+### 1. 케이스 변환기 (Case Converter)
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+입력된 텍스트를 다양한 케이스로 변환하는 기능입니다.
 
-## Expanding the ESLint configuration
+-   **UPPERCASE**: 모든 글자를 대문자로 변환합니다.
+-   **lowercase**: 모든 글자를 소문자로 변환합니다.
+-   **camelCase**: `camelCase` 형식으로 변환합니다.
+-   **snake_case**: `snake_case` 형식으로 변환합니다.
+-   **kebab-case**: `kebab-case` 형식으로 변환합니다.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 🚀 시작하기
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### 1. 의존성 설치
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### 2. 개발 서버 실행
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm run dev
 ```
+
+## 🛠️ 주요 기술 스택
+
+-   **React**: UI 라이브러리
+-   **TypeScript**: 정적 타입 검사
+-   **Vite**: 빠른 개발 서버 및 번들러
