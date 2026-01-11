@@ -1,0 +1,68 @@
+# This file contains all the Kubernetes resources needed to deploy
+# a simple NGINX web server and expose it via an Ingress.
+
+# --- NGINX Deployment ---
+# This section defines the Deployment for the NGINX server.
+# It ensures that one replica of the NGINX container is always running.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:latest
+        ports:
+        - containerPort: 80
+
+---
+
+# --- NGINX Service ---
+# This section defines the Service for the NGINX deployment.
+# It creates a stable internal endpoint (a ClusterIP service)
+# that other resources in the cluster can use to access the NGINX pods.
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-service
+spec:
+  selector:
+    app: nginx
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+
+---
+
+# --- NGINX Ingress ---
+# This section defines the Ingress resource.
+# It tells the Ingress controller (which we installed separately) to route
+# external HTTP traffic from the root path (/) to our nginx-service.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nginx-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  ingressClassName: nginx
+  rules:
+  - http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: nginx-service
+            port:
+              number: 80
