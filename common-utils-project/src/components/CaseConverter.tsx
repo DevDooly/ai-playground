@@ -13,7 +13,7 @@ import {
 import { CopyIcon } from '@chakra-ui/icons';
 
 const CaseConverter: React.FC = () => {
-  const [input, setInput] = useState('');
+  const [input, setInput] = useState('exampleInputText helloWorld Example_String-With-Hyphens');
   const [output, setOutput] = useState('');
   const { onCopy, hasCopied } = useClipboard(output);
 
@@ -33,18 +33,20 @@ const CaseConverter: React.FC = () => {
     );
   };
   const toSnakeCase = () => {
-    setOutput(
-      input
-        .replace(/\s+/g, '_')
-        .toLowerCase()
-    );
+    const result = input
+      .replace(/([a-z\d])([A-Z])/g, '$1_$2')
+      .replace(/([A-Z]+)([A-Z][a-z\d]+)/g, '$1_$2')
+      .replace(/\s+/g, '_')
+      .toLowerCase();
+    setOutput(result);
   };
   const toKebabCase = () => {
-    setOutput(
-      input
-        .replace(/\s+/g, '-')
-        .toLowerCase()
-    );
+    const result = input
+      .replace(/([a-z\d])([A-Z])/g, '$1-$2')
+      .replace(/([A-Z]+)([A-Z][a-z\d]+)/g, '$1-$2')
+      .replace(/\s+/g, '-')
+      .toLowerCase();
+    setOutput(result);
   };
 
   return (
