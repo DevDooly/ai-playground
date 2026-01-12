@@ -5,6 +5,7 @@ import CaseConverter from './components/CaseConverter';
 import VimCheatsheet from './components/VimCheatsheet';
 import JsonYamlFormatter from './components/JsonYamlFormatter';
 import UnitConverter from './components/UnitConverter';
+import StockTrends from './components/StockTrends'; // Import StockTrends component
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Route path="/vim" element={<VimCheatsheet />} />
         <Route path="/json-yaml-formatter" element={<JsonYamlFormatter />} />
         <Route path="/unit-converter" element={<UnitConverter />} />
+        <Route path="/stock-trends" element={<StockTrends />} /> {/* Add route for StockTrends */}
       </Routes>
     </Layout>
   );
