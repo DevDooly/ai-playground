@@ -1,37 +1,58 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Heading, Text, Spinner, Alert, AlertIcon, VStack, Stat, StatLabel, StatNumber } from '@chakra-ui/react';
+import { KOREA_EXIM_API_KEY } from '../config'; // Assuming config.ts exports KOREA_EXIM_API_KEY
 
-interface ExchangeRates {
-  [key: string]: number;
+interface ExchangeRateData {
+  cur_unit: string;
+  cur_nm: string;
+  ttb: string; // TTB (Telegraphic Transfer Buying) rate
+  tts: string; // TTS (Telegraphic Transfer Selling) rate
+  deal_bas_r: string; // Deal Base Rate
+  bkpr: string; // Base Rate for book keeping
+  yy_efee_r: string; // Yearly Effective Interest Rate
+  ten_dd_efee_r: string; // Ten-day Effective Interest Rate
+  kftc_bkpr: string; // KFTC Base Rate for book keeping
+  kftc_deal_bas_r: string; // KFTC Deal Base Rate
+  result: number; // 1 for success, 0 for failure
 }
 
 const ExchangeRate: React.FC = () => {
-  const [exchangeRates, setExchangeRates] = useState<ExchangeRates | null>(null);
+  const [exchangeRates, setExchangeRates] = useState<ExchangeRateData[] | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-
-  // TODO: Replace with a secure environment variable. A free API key is usually not required for exchangerate.host for basic usage.
-  // However, some advanced features or higher request limits might require one.
-  const EXCHANGE_RATE_API_KEY = 'YOUR_EXCHANGE_RATE_API_KEY'; 
-  const BASE_CURRENCY = 'KRW'; // Base currency
-  const SYMBOLS = 'USD,EUR,JPY,GBP,CNY'; // Currencies to fetch
 
   useEffect(() => {
     const fetchExchangeRates = async () => {
       try {
         setLoading(true);
         setError(null);
-        // Exchangerate.host often works without an API key for basic 'latest' endpoint,
-        // but adding `access_key` parameter for completeness if needed for other features or rate limits.
-                  const response = await fetch(
-                    `https://api.exchangerate.host/latest?base=${BASE_CURRENCY}&symbols=${SYMBOLS}${EXCHANGE_RATE_API_KEY ? `&access_key=${EXCHANGE_RATE_API_KEY}` : ''}`        );
-        const data = await response.json();
 
-        if (!response.ok || data.success === false) {
-          throw new Error(data.error?.info || 'Failed to fetch exchange rates');
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+        const day = String(today.getDate()).padStart(2, '0');
+        const searchDate = `${year}${month}${day}`;
+
+        const response = await fetch(
+          `https://oapi.koreaexim.go.kr/site/program/financial/exchangeJSON?authkey=${KOREA_EXIM_API_KEY}&searchdate=${searchDate}&data=AP01`
+        );
+        const data: ExchangeRateData[] = await response.json();
+
+        // The API returns an array, and 'result' property on the first item indicates success/failure.
+        // If result is 1, it's successful. If 0, it's an error.
+        if (!response.ok || (data.length > 0 && data[0].result === 0)) {
+          throw new Error(data.length > 0 ? `API Error: ${JSON.stringify(data[0])}` : 'Failed to fetch exchange rates');
         }
+        
+        // Filter out currencies that are not relevant or have issues (e.g., JPY per 100, so converting it to 1 JPY)
+        const filteredRates = data.map(rate => {
+          if (rate.cur_unit === 'JPY(100)') {
+            return { ...rate, cur_unit: 'JPY', deal_bas_r: (parseFloat(rate.deal_bas_r.replace(',', '')) / 100).toFixed(2) };
+          }
+          return { ...rate, deal_bas_r: rate.deal_bas_r.replace(',', '') }; // Remove comma for parsing
+        });
 
-        setExchangeRates(data.rates);
+        setExchangeRates(filteredRates);
       } catch (err: any) {
         setError(err.message);
       } finally {
@@ -40,7 +61,7 @@ const ExchangeRate: React.FC = () => {
     };
 
     fetchExchangeRates();
-  }, [BASE_CURRENCY, SYMBOLS, EXCHANGE_RATE_API_KEY]);
+  }, []); // Empty dependency array as searchDate is generated inside and KOREA_EXIM_API_KEY is constant
 
   if (loading) {
     return (
@@ -62,7 +83,7 @@ const ExchangeRate: React.FC = () => {
     );
   }
 
-  if (!exchangeRates || Object.keys(exchangeRates).length === 0) {
+  if (!exchangeRates || exchangeRates.length === 0) {
     return (
       <Box p={4}>
         <Text>환율 정보를 찾을 수 없습니다.</Text>
@@ -73,11 +94,11 @@ const ExchangeRate: React.FC = () => {
   return (
     <Box p={4}>
       <VStack spacing={4} align="stretch">
-        <Heading as="h2" size="xl">환율 정보 (기준: {BASE_CURRENCY})</Heading>
-        {Object.entries(exchangeRates).map(([currency, rate]) => (
-          <Stat key={currency}>
-            <StatLabel>{currency}</StatLabel>
-            <StatNumber>{rate.toFixed(2)}</StatNumber>
+        <Heading as="h2" size="xl">환율 정보 (기준: KRW)</Heading>
+        {exchangeRates.map((rate, index) => (
+          <Stat key={index}>
+            <StatLabel>{rate.cur_unit} ({rate.cur_nm})</StatLabel>
+            <StatNumber>{rate.deal_bas_r}</StatNumber>
           </Stat>
         ))}
       </VStack>
