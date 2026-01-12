@@ -8,6 +8,7 @@ import UnitConverter from './components/UnitConverter';
 import StockTrends from './components/StockTrends'; // Import StockTrends component
 import ExchangeRate from './components/ExchangeRate'; // Import ExchangeRate component
 import PaletteGenerator from './components/PaletteGenerator';
+import MarkdownPreview from './components/MarkdownPreview';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
         <Route path="/stock-trends" element={<StockTrends />} /> {/* Add route for StockTrends */}
         <Route path="/exchange-rate" element={<ExchangeRate />} /> {/* Add route for ExchangeRate */}
         <Route path="/palette-generator" element={<PaletteGenerator />} />
+        <Route path="/markdown-preview" element={<MarkdownPreview />} />
       </Routes>
     </Layout>
   );
