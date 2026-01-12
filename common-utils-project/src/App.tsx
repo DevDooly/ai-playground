@@ -7,6 +7,7 @@ import JsonYamlFormatter from './components/JsonYamlFormatter';
 import UnitConverter from './components/UnitConverter';
 import StockTrends from './components/StockTrends'; // Import StockTrends component
 import ExchangeRate from './components/ExchangeRate'; // Import ExchangeRate component
+import PaletteGenerator from './components/PaletteGenerator';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
         <Route path="/unit-converter" element={<UnitConverter />} />
         <Route path="/stock-trends" element={<StockTrends />} /> {/* Add route for StockTrends */}
         <Route path="/exchange-rate" element={<ExchangeRate />} /> {/* Add route for ExchangeRate */}
+        <Route path="/palette-generator" element={<PaletteGenerator />} />
       </Routes>
     </Layout>
   );
