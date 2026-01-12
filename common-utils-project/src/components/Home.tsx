@@ -38,7 +38,7 @@ const todoData: TodoCategory[] = [
     title: '일반 유틸리티',
     items: [
       { name: 'JSON/YAML 포맷터 & 검증기', description: 'JSON 또는 YAML 데이터의 형식을 지정하고 유효성을 검사하는 도구입니다.', implemented: true, path: '/json-yaml-formatter' },
-      { name: '색상 팔레트 생성기', description: '단일 입력 색상 또는 테마 설명을 기반으로 색상 팔레트를 생성합니다.', implemented: false },
+      { name: '색상 팔레트 생성기', description: '단일 입력 색상 또는 테마 설명을 기반으로 색상 팔레트를 생성합니다.', implemented: true, path: '/palette-generator' },
       { name: '단위 변환기', description: '일반적인 단위(예: 픽셀, rem, em, 미터법/임페리얼) 간 변환을 위한 간단한 유틸리티입니다.', implemented: true, path: '/unit-converter' },
       { name: '대소문자 변환기', description: '텍스트의 대소문자를 다양한 형식으로 변환합니다.', implemented: true, path: '/case-converter' }, // Existing CaseConverter
       { name: 'Vim Cheatsheet', description: 'Vim 명령어 및 단축키 요약본입니다.', implemented: true, path: '/vim' }, // Add VimCheatsheet
