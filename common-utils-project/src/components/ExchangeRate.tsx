@@ -34,7 +34,7 @@ const ExchangeRate: React.FC = () => {
         const searchDate = `${year}${month}${day}`;
 
         const response = await fetch(
-          `https://oapi.koreaexim.go.kr/site/program/financial/exchangeJSON?authkey=${KOREA_EXIM_API_KEY}&searchdate=${searchDate}&data=AP01`
+          `/api/koreaexim/site/program/financial/exchangeJSON?authkey=${KOREA_EXIM_API_KEY}&searchdate=${searchDate}&data=AP01`
         );
         const data: ExchangeRateData[] = await response.json();
 
