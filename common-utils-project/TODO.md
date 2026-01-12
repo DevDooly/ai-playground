@@ -1,24 +1,24 @@
-# TODO: Future Features for Common Utils Project
+# TODO: Common Utils 프로젝트 향후 기능
 
-Here is a list of potential new features to add to this project.
+이 프로젝트에 추가할 새로운 기능 목록입니다.
 
-## Gemini-Powered Features
+## Gemini 기반 기능
 
-- [ ] **Commit Message Generator:**
-    -   **Description:** Paste `git diff` output and get a conventional commit message.
-    -   **Integration:** Use Gemini to analyze the diff and generate a descriptive and conventional commit message.
-- [ ] **Regex Generator/Explainer:**
-    -   **Description:** Generate regular expressions from natural language descriptions and explain existing regex patterns.
-    -   **Integration:** Use Gemini to translate natural language to regex and vice-versa.
-- [ ] **Code Translator:**
-    -   **Description:** A tool to translate code snippets from one programming language to another.
-    -   **Integration:** Leverage Gemini's code translation capabilities.
+- [ ] **커밋 메시지 생성기:**
+    -   **설명:** `git diff` 출력을 붙여넣으면 규칙에 맞는 커밋 메시지를 받습니다.
+    -   **통합:** Gemini를 사용하여 diff를 분석하고 설명이 포함된 규칙적인 커밋 메시지를 생성합니다.
+- [ ] **정규식 생성기/설명기:**
+    -   **설명:** 자연어 설명에서 정규식을 생성하고 기존 정규식 패턴을 설명합니다.
+    -   **통합:** Gemini를 사용하여 자연어를 정규식으로 또는 그 반대로 번역합니다.
+- [ ] **코드 번역기:**
+    -   **설명:** 한 프로그래밍 언어에서 다른 프로그래밍 언어로 코드 스니펫을 번역하는 도구입니다.
+    -   **통합:** Gemini의 코드 번역 기능을 활용합니다.
 
-## General Utilities
+## 일반 유틸리티
 
-- [ ] **JSON/YAML Formatter & Validator:**
-    -   **Description:** A tool to format and validate JSON or YAML data.
-- [ ] **Color Palette Generator:**
-    -   **Description:** Generate a color palette based on a single input color or a theme description.
-- [ ] **Unit Converter:**
-    -   **Description:** A simple utility to convert between common units (e.g., pixels, rems, ems, metric/imperial).
+- [ ] **JSON/YAML 포맷터 & 검증기:**
+    -   **설명:** JSON 또는 YAML 데이터의 형식을 지정하고 유효성을 검사하는 도구입니다.
+- [ ] **색상 팔레트 생성기:**
+    -   **설명:** 단일 입력 색상 또는 테마 설명을 기반으로 색상 팔레트를 생성합니다.
+- [ ] **단위 변환기:**
+    -   **설명:** 일반적인 단위(예: 픽셀, rem, em, 미터법/임페리얼) 간 변환을 위한 간단한 유틸리티입니다.
