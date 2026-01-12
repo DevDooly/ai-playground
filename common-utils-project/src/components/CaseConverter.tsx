@@ -15,7 +15,7 @@ import {
 import { CopyIcon, ArrowForwardIcon } from '@chakra-ui/icons';
 
 const CaseConverter: React.FC = () => {
-  const [input, setInput] = useState('exampleInputText helloWorld Example_String-With-Hyphens');
+  const [input, setInput] = useState('Here is some example text.\nYou can type your own text here.');
   const [output, setOutput] = useState('');
   const { onCopy, hasCopied } = useClipboard(output);
 
