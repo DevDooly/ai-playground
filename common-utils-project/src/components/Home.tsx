@@ -41,13 +41,14 @@ const todoData: TodoCategory[] = [
       { name: '색상 팔레트 생성기', description: '단일 입력 색상 또는 테마 설명을 기반으로 색상 팔레트를 생성합니다.', implemented: false },
       { name: '단위 변환기', description: '일반적인 단위(예: 픽셀, rem, em, 미터법/임페리얼) 간 변환을 위한 간단한 유틸리티입니다.', implemented: true, path: '/unit-converter' },
       { name: '대소문자 변환기', description: '텍스트의 대소문자를 다양한 형식으로 변환합니다.', implemented: true, path: '/case-converter' }, // Existing CaseConverter
+      { name: 'Vim Cheatsheet', description: 'Vim 명령어 및 단축키 요약본입니다.', implemented: true, path: '/vim' }, // Add VimCheatsheet
     ],
   },
   {
-    title: '기타 정보',
+    title: '정보 조회', // Renamed from '기타 정보' to be more descriptive
     items: [
-      { name: '주식 동향 (나스닥, 코스피 등)', description: '주요 주식 시장(나스닥, 코스피 등)의 실시간 또는 지연된 동향 정보를 조회합니다.', implemented: false },
-      { name: '환율 정보', description: '주요 통화 쌍의 현재 환율 정보를 조회합니다.', implemented: false },
+      { name: '주식 동향 (나스닥, 코스피 등)', description: '주요 주식 시장(나스닥, 코스피 등)의 실시간 또는 지연된 동향 정보를 조회합니다.', implemented: true, path: '/stock-trends' }, // Mark as implemented and add path
+      { name: '환율 정보', description: '주요 통화 쌍의 현재 환율 정보를 조회합니다.', implemented: true, path: '/exchange-rate' }, // Mark as implemented and add path
     ],
   },
 ];

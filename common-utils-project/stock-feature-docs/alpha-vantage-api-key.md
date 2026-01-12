@@ -15,17 +15,25 @@
 4.  **API 키 확인:**
     제출 후, Alpha Vantage에서 발급된 API 키가 포함된 페이지로 리디렉션되거나, 등록한 이메일 주소로 API 키가 전송됩니다. 발급된 API 키를 복사해둡니다.
 
-5.  **`StockTrends.tsx` 파일 업데이트:**
-    `common-utils-project/src/components/StockTrends.tsx` 파일을 열고 다음 라인을 찾습니다:
-    ```typescript
-    const ALPHA_VANTAGE_API_KEY = 'YOUR_ALPHA_VANTAGE_API_KEY';
-    ```
-    `'YOUR_ALPHA_VANTAGE_API_KEY'` 부분을 발급받은 실제 API 키로 교체합니다.
+5.  **API 키 설정 (보안 권장):**
+    API 키는 공개된 Git 저장소에 직접 커밋되지 않도록 주의해야 합니다. 다음과 같이 설정하는 것을 권장합니다:
 
-    예시:
-    ```typescript
-    const ALPHA_VANTAGE_API_KEY = 'YOUR_ACTUAL_ALPHA_VANTAGE_API_KEY_HERE';
-    ```
+    a.  **`src/config.example.ts` 파일 복사 및 이름 변경:**
+        프로젝트 루트 디렉토리에서 `src/config.example.ts` 파일을 `src/config.ts`로 복사하고 이름을 변경합니다.
+        ```bash
+        cp src/config.example.ts src/config.ts
+        ```
+
+    b.  **`.gitignore` 확인:**
+        `src/config.ts` 파일은 이미 `.gitignore`에 추가되어 있으므로 Git 저장소에 커밋되지 않습니다. 이 파일을 Git에 추가하지 않도록 주의하십시오.
+
+    c.  **`src/config.ts` 파일 업데이트:**
+        새로 생성된 `src/config.ts` 파일을 열고 `'YOUR_ALPHA_VANTAGE_API_KEY'` 부분을 발급받은 실제 API 키로 교체합니다.
+
+        예시 (`src/config.ts`):
+        ```typescript
+        export const ALPHA_VANTAGE_API_KEY = 'YOUR_ACTUAL_ALPHA_VANTAGE_API_KEY_HERE';
+        ```
 
 **주의사항:**
 

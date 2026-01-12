@@ -23,9 +23,8 @@ const ExchangeRate: React.FC = () => {
         setError(null);
         // Exchangerate.host often works without an API key for basic 'latest' endpoint,
         // but adding `access_key` parameter for completeness if needed for other features or rate limits.
-        const response = await fetch(
-          \`https://api.exchangerate.host/latest?base=${BASE_CURRENCY}&symbols=${SYMBOLS}\${EXCHANGE_RATE_API_KEY ? \`&access_key=\${EXCHANGE_RATE_API_KEY}\` : ''}\`
-        );
+                  const response = await fetch(
+                    `https://api.exchangerate.host/latest?base=${BASE_CURRENCY}&symbols=${SYMBOLS}${EXCHANGE_RATE_API_KEY ? `&access_key=${EXCHANGE_RATE_API_KEY}` : ''}`        );
         const data = await response.json();
 
         if (!response.ok || data.success === false) {
@@ -50,7 +49,6 @@ const ExchangeRate: React.FC = () => {
         <Text mt={2}>환율 정보를 불러오는 중...</Text>
       </Box>
     );
-  );
   }
 
   if (error) {

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Text, Spinner, Alert, AlertIcon, VStack, Heading, Stat, StatLabel, StatNumber, StatHelpText, StatArrow } from '@chakra-ui/react';
+import { ALPHA_VANTAGE_API_KEY } from '../config'; // Import API key from config file
 
 interface StockData {
   '01. symbol': string;
@@ -14,34 +15,71 @@ interface StockData {
   '10. change percent': string;
 }
 
+const CACHE_DURATION = 15 * 60 * 1000; // 15 minutes in milliseconds
+
 const StockTrends: React.FC = () => {
   const [stockData, setStockData] = useState<StockData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  // Removed lastUpdatedClientTime state
 
-  // TODO: Replace with a secure environment variable
-  const ALPHA_VANTAGE_API_KEY = 'YOUR_ALPHA_VANTAGE_API_KEY'; 
-  const SYMBOL = 'AAPL'; // Example: Apple Inc.
+  // Remember to replace 'YOUR_ALPHA_VANTAGE_API_KEY' in src/config.ts with your actual API key.
+  // The src/config.ts file is gitignored for security.
+  const SYMBOL = 'QQQ'; // Example: NASDAQ 100 ETF
 
   useEffect(() => {
     const fetchStockData = async () => {
+      let data: any; // Declare data outside try block
+      // Removed fetchedTimestamp variable
       try {
+        setLoading(true);
+        setError(null);
+
+        // Check cache first
+        const cachedData = localStorage.getItem(`stockData_${SYMBOL}`);
+        if (cachedData) {
+          const { data: storedData, timestamp } = JSON.parse(cachedData);
+          if (Date.now() - timestamp < CACHE_DURATION) {
+            setStockData(storedData['Global Quote']); // Assuming 'Global Quote' is the actual data part
+            setLoading(false);
+            return; // Use cached data
+          }
+        }
+
         const response = await fetch(
           `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${SYMBOL}&apikey=${ALPHA_VANTAGE_API_KEY}`
         );
-        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        data = await response.json(); // Assign data here
+        // fetchedTimestamp = Date.now(); // Data was just fetched - no longer needed for UI
 
         if (data['Error Message']) {
           throw new Error(data['Error Message']);
         }
         if (data['Note']) {
-            // API rate limit or other messages
             setError(data['Note']);
             setLoading(false);
             return;
         }
+        // Handle Alpha Vantage rate limit message
+        if (data['Information']) {
+            setError(data['Information']);
+            setLoading(false);
+            return;
+        }
 
-        setStockData(data['Global Quote']);
+        if (data['Global Quote'] && Object.keys(data['Global Quote']).length > 0) {
+            setStockData(data['Global Quote']);
+            // setLastUpdatedClientTime(new Date(fetchedTimestamp).toLocaleString()); // Removed
+            // Store new data in cache
+            localStorage.setItem(`stockData_${SYMBOL}`, JSON.stringify({ data: data, timestamp: Date.now() })); // Keep caching
+        } else {
+            setError('No Global Quote data found in API response. This might be due to an invalid symbol or API issues.');
+        }
       } catch (err: any) {
         setError(err.message);
       } finally {
@@ -124,9 +162,15 @@ const StockTrends: React.FC = () => {
           <StatNumber>{parseFloat(stockData['08. previous close']).toFixed(2)}</StatNumber>
         </Stat>
 
-        <Text fontSize="sm" color="gray.500">
-          Last updated: {stockData['07. latest trading day']}
-        </Text>
+        {stockData['07. latest trading day'] && (
+          <Text fontSize="sm" color="gray.500">
+            데이터 출처: Alpha Vantage | 최종 거래일: {stockData['07. latest trading day']}
+            <br />
+            <Text as="span" fontStyle="italic" fontSize="xs">
+              (Alpha Vantage 'Global Quote' API는 거래일만 제공하며, 정확한 시각은 제공하지 않습니다.)
+            </Text>
+          </Text>
+        )}
       </VStack>
     </Box>
   );
