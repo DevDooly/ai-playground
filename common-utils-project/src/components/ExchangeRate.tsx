@@ -52,7 +52,9 @@ const ExchangeRate: React.FC = () => {
           return { ...rate, deal_bas_r: rate.deal_bas_r.replace(',', '') }; // Remove comma for parsing
         });
 
-        setExchangeRates(filteredRates);
+        const targetCurrencies = ['USD', 'JPY', 'EUR'];
+        const finalRates = filteredRates.filter(rate => targetCurrencies.includes(rate.cur_unit));
+        setExchangeRates(finalRates);
       } catch (err: any) {
         setError(err.message);
       } finally {
