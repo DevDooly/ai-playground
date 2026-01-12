@@ -19,6 +19,18 @@
 -   **Filter (Grep)**: 특정 문자열이 포함되거나 포함되지 않은 라인만 필터링합니다. (`:g/text/p`, `:v/text/p`)
 -   **Substitute**: 특정 문자열을 다른 문자열로 치환합니다. (`:%s/search/replace/g`)
 
+### 3. 환율 정보 (Exchange Rate Information)
+
+주요 통화 쌍의 현재 환율 정보를 조회합니다.
+
+### 4. 주식 동향 (Stock Trends)
+
+주요 주식 시장(나스닥, 코스피 등)의 실시간 또는 지연된 동향 정보를 조회합니다. (Alpha Vantage API는 거래일만 제공하며, 정확한 시각은 제공하지 않습니다.)
+
+### 5. API 키 관리
+
+민감한 API 키는 `.gitignore`에 추가된 `src/config.ts` 파일을 통해 관리됩니다. `src/config.example.ts` 파일을 `src/config.ts`로 복사한 후, 해당 파일에 API 키를 설정하여 사용합니다.
+
 ## 🎨 UI / UX
 
 -   **Chakra UI**: 모던하고 일관된 디자인 시스템을 위해 Chakra UI를 사용합니다.
