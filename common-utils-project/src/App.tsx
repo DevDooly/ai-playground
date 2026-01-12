@@ -11,6 +11,7 @@ import PaletteGenerator from './components/PaletteGenerator';
 import MarkdownPreview from './components/MarkdownPreview';
 import Base64Converter from './components/Base64Converter';
 import JwtDecoder from './components/JwtDecoder';
+import SnippetRepository from './components/SnippetRepository';
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
         <Route path="/markdown-preview" element={<MarkdownPreview />} />
         <Route path="/base64-converter" element={<Base64Converter />} />
         <Route path="/jwt-decoder" element={<JwtDecoder />} />
+        <Route path="/snippet-repository" element={<SnippetRepository />} />
       </Routes>
     </Layout>
   );
