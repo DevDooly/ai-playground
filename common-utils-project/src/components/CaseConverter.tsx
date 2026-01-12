@@ -71,7 +71,7 @@ const CaseConverter: React.FC = () => {
         </Text>
       </VStack>
 
-      <Grid templateColumns={{ base: '1fr', md: '1fr auto 1fr' }} gap={6} align="center">
+      <Grid templateColumns={{ base: '1fr', md: '1fr auto 1fr' }} gap={6} alignItems="center">
         <GridItem>
           <Heading as="h3" size="md" mb={2}>
             Input

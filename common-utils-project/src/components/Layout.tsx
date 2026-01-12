@@ -3,17 +3,15 @@ import { Box, Flex, Heading, List, ListItem, Link as ChakraLink } from '@chakra-
 import { NavLink as RouterNavLink } from 'react-router-dom';
 
 const NavItem: React.FC<{ to: string; children: React.ReactNode }> = ({ to, children }) => {
-  const activeStyle = {
-    color: 'blue.500',
-    fontWeight: 'bold',
-  };
-
   return (
     <ListItem>
       <ChakraLink
         as={RouterNavLink}
         to={to}
-        style={({ isActive }) => (isActive ? activeStyle : {})}
+        _activeLink={{
+          color: 'blue.500',
+          fontWeight: 'bold',
+        }}
         _hover={{ textDecoration: 'none', color: 'blue.500' }}
       >
         {children}

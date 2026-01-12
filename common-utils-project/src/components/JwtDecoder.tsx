@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   Box,
   Heading,
   Textarea,
   VStack,
-  Text,
   Alert,
   AlertIcon,
   Code,
@@ -13,42 +12,30 @@ import {
   Tooltip,
   IconButton
 } from '@chakra-ui/react';
-import { jwtDecode, JwtPayload } from 'jwt-decode';
+import { jwtDecode, type JwtPayload } from 'jwt-decode';
 import { CopyIcon } from '@chakra-ui/icons';
 
 const JwtDecoder: React.FC = () => {
   const [token, setToken] = useState('');
-  const [header, setHeader] = useState<object | null>(null);
-  const [payload, setPayload] = useState<JwtPayload | null>(null);
-  const [error, setError] = useState<string | null>(null);
 
-  const { onCopy: onCopyHeader, hasCopied: hasCopiedHeader } = useClipboard(header ? JSON.stringify(header, null, 2) : '');
-  const { onCopy: onCopyPayload, hasCopied: hasCopiedPayload } = useClipboard(payload ? JSON.stringify(payload, null, 2) : '');
-
-  useEffect(() => {
+  const { header, payload, error } = useMemo(() => {
     if (token.trim() === '') {
-      setHeader(null);
-      setPayload(null);
-      setError(null);
-      return;
+      return { header: null, payload: null, error: null };
     }
-
     try {
       const decodedHeader = jwtDecode(token, { header: true });
       const decodedPayload = jwtDecode<JwtPayload>(token);
-      setHeader(decodedHeader);
-      setPayload(decodedPayload);
-      setError(null);
+      return { header: decodedHeader, payload: decodedPayload, error: null };
     } catch (e) {
-      setHeader(null);
-      setPayload(null);
       if (e instanceof Error) {
-        setError(e.message);
-      } else {
-        setError('An unknown error occurred while decoding the token.');
+        return { header: null, payload: null, error: e.message };
       }
+      return { header: null, payload: null, error: 'An unknown error occurred while decoding the token.' };
     }
   }, [token]);
+
+  const { onCopy: onCopyHeader, hasCopied: hasCopiedHeader } = useClipboard(header ? JSON.stringify(header, null, 2) : '');
+  const { onCopy: onCopyPayload, hasCopied: hasCopiedPayload } = useClipboard(payload ? JSON.stringify(payload, null, 2) : '');
 
   return (
     <Box>

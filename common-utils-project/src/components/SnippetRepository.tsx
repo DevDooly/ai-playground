@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {
   Box, Heading, Button, VStack, HStack, Input, Textarea, Select,
   Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton,
-  useDisclosure, useToast, Text, IconButton, Spacer
+  useDisclosure, useToast, Text, IconButton, Spacer, Tooltip
 } from '@chakra-ui/react';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { a11yDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
@@ -17,21 +17,18 @@ interface Snippet {
 }
 
 const SnippetRepository: React.FC = () => {
-  const [snippets, setSnippets] = useState<Snippet[]>([]);
+  const [snippets, setSnippets] = useState<Snippet[]>(() => {
+    try {
+      const savedSnippets = localStorage.getItem('snippets');
+      return savedSnippets ? JSON.parse(savedSnippets) : [];
+    } catch (error) {
+      console.error("Failed to load snippets from localStorage", error);
+      return [];
+    }
+  });
   const [currentSnippet, setCurrentSnippet] = useState<Snippet | null>(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
-
-  useEffect(() => {
-    try {
-      const savedSnippets = localStorage.getItem('snippets');
-      if (savedSnippets) {
-        setSnippets(JSON.parse(savedSnippets));
-      }
-    } catch (error) {
-      console.error("Failed to load snippets from localStorage", error);
-    }
-  }, []);
 
   useEffect(() => {
     try {
@@ -66,7 +63,7 @@ const SnippetRepository: React.FC = () => {
     toast({ title: "Snippet deleted.", status: "warning", duration: 3000, isClosable: true });
   };
   
-  const { onCopy, hasCopied } = useClipboard("");
+  const { onCopy } = useClipboard("");
 
   return (
     <Box>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   Box,
   Button,
@@ -44,7 +44,7 @@ const UnitConverter: React.FC = () => {
   const toast = useToast();
   const { onCopy, hasCopied } = useClipboard(convertedValue);
 
-  const performConversion = () => {
+  const performConversion = useCallback(() => {
     const value = parseFloat(inputValue);
     if (isNaN(value)) {
       setConvertedValue('');
@@ -61,7 +61,7 @@ const UnitConverter: React.FC = () => {
     // Determine the group of the input unit
     let inputGroup: string | undefined;
     for (const group in UNIT_GROUPS) {
-      if (UNIT_GROUPS[group as keyof typeof UNIT_GROOPS].includes(inputUnit)) {
+      if ((UNIT_GROUPS as any)[group].includes(inputUnit)) {
         inputGroup = group;
         break;
       }
@@ -70,7 +70,7 @@ const UnitConverter: React.FC = () => {
     // Determine the group of the output unit
     let outputGroup: string | undefined;
     for (const group in UNIT_GROUPS) {
-      if (UNIT_GROUPS[group as keyof typeof UNIT_GROOPS].includes(outputUnit)) {
+      if ((UNIT_GROUPS as any)[group].includes(outputUnit)) {
         outputGroup = group;
         break;
       }
@@ -102,7 +102,7 @@ const UnitConverter: React.FC = () => {
         isClosable: true,
       });
     }
-  };
+  }, [inputValue, inputUnit, outputUnit, toast]);
 
   useEffect(() => {
     if (inputValue) {
@@ -110,7 +110,7 @@ const UnitConverter: React.FC = () => {
     } else {
       setConvertedValue('');
     }
-  }, [inputValue, inputUnit, outputUnit]); // Recalculate on input change
+  }, [inputValue, performConversion]); // Recalculate on input change
 
   const clearInputs = () => {
     setInputValue('');

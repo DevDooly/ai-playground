@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Heading, Text, Input, Button, VStack, HStack, Spacer, useToast } from '@chakra-ui/react';
+import { Box, Heading, Text, Input, Button, VStack, HStack, useToast } from '@chakra-ui/react';
 import tinycolor from 'tinycolor2';
 
 const PaletteGenerator: React.FC = () => {

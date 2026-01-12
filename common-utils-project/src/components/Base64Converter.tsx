@@ -11,7 +11,6 @@ import {
   Tooltip,
   Grid,
   GridItem,
-  Text
 } from '@chakra-ui/react';
 import { CopyIcon } from '@chakra-ui/icons';
 import { Base64 } from 'js-base64';
@@ -25,7 +24,7 @@ const Base64Converter: React.FC = () => {
   const handleEncode = () => {
     try {
       setBase64Text(Base64.encode(plainText));
-    } catch (error) {
+    } catch {
       setBase64Text('Error encoding text.');
     }
   };
@@ -33,7 +32,7 @@ const Base64Converter: React.FC = () => {
   const handleDecode = () => {
     try {
       setPlainText(Base64.decode(base64Text));
-    } catch (error) {
+    } catch {
       setPlainText('Error decoding text.');
     }
   };
@@ -43,7 +42,7 @@ const Base64Converter: React.FC = () => {
       <Heading as="h2" size="xl" mb={8}>
         Base64 Encoder / Decoder
       </Heading>
-      <Grid templateColumns={{ base: '1fr', md: '1fr auto 1fr' }} gap={6} align="center">
+      <Grid templateColumns={{ base: '1fr', md: '1fr auto 1fr' }} gap={6} alignItems="center">
         <GridItem>
           <HStack mb={2} justify="space-between">
             <Heading as="h3" size="md">
