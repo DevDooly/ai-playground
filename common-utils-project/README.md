@@ -51,7 +51,7 @@ npm install
 npm run dev
 ```
 
-## 部署 (PM2)
+## 배포 (PM2)
 
 Vite 프로젝트를 프로덕션 환경에서 PM2로 실행하는 방법입니다.
 
