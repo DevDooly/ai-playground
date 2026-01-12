@@ -12,6 +12,7 @@ import MarkdownPreview from './components/MarkdownPreview';
 import Base64Converter from './components/Base64Converter';
 import JwtDecoder from './components/JwtDecoder';
 import SnippetRepository from './components/SnippetRepository';
+import ImageConverter from './components/ImageConverter';
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
         <Route path="/base64-converter" element={<Base64Converter />} />
         <Route path="/jwt-decoder" element={<JwtDecoder />} />
         <Route path="/snippet-repository" element={<SnippetRepository />} />
+        <Route path="/image-converter" element={<ImageConverter />} />
       </Routes>
     </Layout>
   );

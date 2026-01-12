@@ -50,6 +50,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
           <NavItem to="/base64-converter">Base64 Converter</NavItem>
           <NavItem to="/jwt-decoder">JWT Decoder</NavItem>
           <NavItem to="/snippet-repository">Snippet Repository</NavItem>
+          <NavItem to="/image-converter">Image Converter</NavItem>
         </List>
       </Box>
       <Box as="main" p={8} flex={1} bg="white">
