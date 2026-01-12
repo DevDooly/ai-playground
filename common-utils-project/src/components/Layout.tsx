@@ -41,6 +41,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
           <NavItem to="/">Case Converter</NavItem>
           <NavItem to="/vim">Vim Cheatsheet</NavItem>
           <NavItem to="/json-yaml-formatter">JSON/YAML 포맷터</NavItem>
+          <NavItem to="/unit-converter">단위 변환기</NavItem>
         </List>
       </Box>
       <Box as="main" p={8} flex={1} bg="white">
