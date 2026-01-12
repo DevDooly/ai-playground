@@ -48,6 +48,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
           <NavItem to="/palette-generator">Palette Generator</NavItem>
           <NavItem to="/markdown-preview">Markdown Preview</NavItem>
           <NavItem to="/base64-converter">Base64 Converter</NavItem>
+          <NavItem to="/jwt-decoder">JWT Decoder</NavItem>
         </List>
       </Box>
       <Box as="main" p={8} flex={1} bg="white">

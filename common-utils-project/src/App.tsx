@@ -10,6 +10,7 @@ import ExchangeRate from './components/ExchangeRate'; // Import ExchangeRate com
 import PaletteGenerator from './components/PaletteGenerator';
 import MarkdownPreview from './components/MarkdownPreview';
 import Base64Converter from './components/Base64Converter';
+import JwtDecoder from './components/JwtDecoder';
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
         <Route path="/palette-generator" element={<PaletteGenerator />} />
         <Route path="/markdown-preview" element={<MarkdownPreview />} />
         <Route path="/base64-converter" element={<Base64Converter />} />
+        <Route path="/jwt-decoder" element={<JwtDecoder />} />
       </Routes>
     </Layout>
   );
