@@ -38,7 +38,8 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
           DevDooly Tools
         </Heading>
         <List spacing={4}>
-          <NavItem to="/">Case Converter</NavItem>
+          <NavItem to="/">목차</NavItem> {/* New Home link */}
+          <NavItem to="/case-converter">Case Converter</NavItem> {/* Updated route */}
           <NavItem to="/vim">Vim Cheatsheet</NavItem>
           <NavItem to="/json-yaml-formatter">JSON/YAML 포맷터</NavItem>
           <NavItem to="/unit-converter">단위 변환기</NavItem>
