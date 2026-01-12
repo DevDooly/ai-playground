@@ -9,6 +9,7 @@ import StockTrends from './components/StockTrends'; // Import StockTrends compon
 import ExchangeRate from './components/ExchangeRate'; // Import ExchangeRate component
 import PaletteGenerator from './components/PaletteGenerator';
 import MarkdownPreview from './components/MarkdownPreview';
+import Base64Converter from './components/Base64Converter';
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
         <Route path="/exchange-rate" element={<ExchangeRate />} /> {/* Add route for ExchangeRate */}
         <Route path="/palette-generator" element={<PaletteGenerator />} />
         <Route path="/markdown-preview" element={<MarkdownPreview />} />
+        <Route path="/base64-converter" element={<Base64Converter />} />
       </Routes>
     </Layout>
   );

@@ -43,7 +43,7 @@ const todoData: TodoCategory[] = [
       { name: '대소문자 변환기', description: '텍스트의 대소문자를 다양한 형식으로 변환합니다.', implemented: true, path: '/case-converter' }, // Existing CaseConverter
       { name: 'Vim Cheatsheet', description: 'Vim 명령어 및 단축키 요약본입니다.', implemented: true, path: '/vim' }, // Add VimCheatsheet
       { name: 'Markdown 미리보기', description: '마크다운 텍스트를 실시간으로 HTML로 렌더링하여 미리보는 도구입니다.', implemented: true, path: '/markdown-preview' },
-      { name: 'Base64 인코더/디코더', description: '텍스트나 파일을 Base64로 인코딩하거나 Base64 문자열을 디코딩하는 도구입니다.', implemented: false },
+      { name: 'Base64 인코더/디코더', description: '텍스트나 파일을 Base64로 인코딩하거나 Base64 문자열을 디코딩하는 도구입니다.', implemented: true, path: '/base64-converter' },
       { name: 'JWT 디코더', description: 'JSON Web Token(JWT)을 디코딩하여 페이로드(payload), 헤더(header), 서명(signature)을 확인하는 도구입니다.', implemented: false },
       { name: '코드 스니펫 저장소', description: '자주 사용하는 코드 스니펫을 저장하고 쉽게 검색하여 복사할 수 있는 개인용 저장소입니다.', implemented: false },
       { name: '이미지 압축/변환기', description: '이미지를 압축하여 파일 크기를 줄이거나, PNG, JPG, WebP 등 다른 형식으로 변환하는 도구입니다.', implemented: false },
