@@ -6,28 +6,33 @@
 
 ## ✨ 주요 기능
 
-### 1. 케이스 변환기 (Case Converter)
+이 프로젝트는 개발 및 일상 작업에 유용한 다양한 유틸리티를 제공합니다.
 
-입력된 텍스트를 `UPPERCASE`, `lowercase`, `camelCase`, `PascalCase`, `snake_case`, `kebab-case` 등 다양한 케이스로 변환합니다.
+### 텍스트 및 콘텐츠 도구
 
-### 2. Vim 명령어 시뮬레이터 (Vim Cheatsheet)
+-   **케이스 변환기 (Case Converter)**: 입력된 텍스트를 `UPPERCASE`, `lowercase`, `camelCase`, `PascalCase`, `snake_case`, `kebab-case` 등 다양한 케이스로 변환합니다.
+-   **JSON/YAML 포맷터 (JSON/YAML Formatter)**: JSON 또는 YAML 데이터의 형식을 지정하고 유효성을 검사합니다.
+-   **Markdown 미리보기 (Markdown Preview)**: 마크다운 텍스트를 실시간으로 HTML로 렌더링하여 결과를 미리 봅니다.
+-   **Base64 인코더/디코더 (Base64 Encoder/Decoder)**: 텍스트를 Base64로 인코딩하거나 Base64 문자열을 디코딩합니다.
+-   **JWT 디코더 (JWT Decoder)**: JSON Web Token을 디코딩하여 페이로드와 헤더 정보를 확인합니다.
+-   **단위 변환기 (Unit Converter)**: 웹 단위(px, rem, em)와 길이 단위(mm, cm, m 등) 간의 빠른 변환을 지원합니다.
 
-텍스트에 대해 Vim과 유사한 편집 명령어를 테스트해볼 수 있는 도구입니다.
+### 개발 및 코드 관련 도구
 
--   **Sort**: 라인을 알파벳 순으로 정렬합니다. (`:sort`)
--   **Unique**: 중복된 라인을 제거합니다. (`:sort u`)
--   **Filter (Grep)**: 특정 문자열이 포함되거나 포함되지 않은 라인만 필터링합니다. (`:g/text/p`, `:v/text/p`)
--   **Substitute**: 특정 문자열을 다른 문자열로 치환합니다. (`:%s/search/replace/g`)
+-   **코드 스니펫 저장소 (Snippet Repository)**: 자주 사용하는 코드 스니펫을 언어별로 저장하고 관리합니다. (localStorage 사용)
+-   **Vim 명령어 시뮬레이터 (Vim Cheatsheet)**: 텍스트에 대해 정렬, 필터링, 치환 등 Vim의 기본 편집 명령어를 테스트합니다.
 
-### 3. 환율 정보 (Exchange Rate Information)
+### 미디어 및 그래픽 도구
 
-주요 통화 쌍의 현재 환율 정보를 조회합니다.
+-   **색상 팔레트 생성기 (Palette Generator)**: 기준 색상 하나를 입력하면 그에 맞는 다양한 색상 팔레트(밝은/어두운 음영, 보색)를 생성합니다.
+-   **이미지 압축/변환기 (Image Compressor/Converter)**: 이미지를 브라우저에서 압축하거나 JPEG, PNG, WEBP 형식으로 변환합니다.
 
-### 4. 주식 동향 (Stock Trends)
+### 정보 조회 도구
 
-주요 주식 시장(나스닥, 코스피 등)의 실시간 또는 지연된 동향 정보를 조회합니다. (Alpha Vantage API는 거래일만 제공하며, 정확한 시각은 제공하지 않습니다.)
+-   **환율 정보 (Exchange Rate)**: 주요 통화 쌍의 현재 환율 정보를 조회합니다.
+-   **주식 동향 (Stock Trends)**: 주요 주식 시장의 동향 정보를 조회합니다.
 
-### 5. API 키 관리
+## 🔐 API 키 관리
 
 민감한 API 키는 `.gitignore`에 추가된 `src/config.ts` 파일을 통해 관리됩니다. `src/config.example.ts` 파일을 `src/config.ts`로 복사한 후, 해당 파일에 API 키를 설정하여 사용합니다.
 
