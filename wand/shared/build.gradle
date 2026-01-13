@@ -1,0 +1,40 @@
+import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+
+plugins {
+    id 'org.jetbrains.kotlin.multiplatform'
+    id 'org.jetbrains.compose'
+    id 'com.android.library'
+}
+
+kotlin {
+    jvmToolchain(17)
+    android()
+    jvm("desktop")
+
+    sourceSets {
+        commonMain.dependencies {
+            implementation compose.runtime
+            implementation compose.foundation
+            implementation compose.material
+        }
+        androidMain.dependencies {
+            implementation("com.google.android.material:material:1.11.0")
+        }
+        getByName("desktopMain").dependencies {
+        }
+    }
+}
+
+android {
+    namespace 'dev.dooly.wand.shared'
+    compileSdk 34
+    defaultConfig {
+        minSdk 24
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+}
+
