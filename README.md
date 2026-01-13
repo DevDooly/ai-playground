@@ -11,7 +11,14 @@ React와 TypeScript를 기반으로 한 웹 유틸리티 모음입니다. 현재
 -   **주요 기술:** React, TypeScript, Vite, Chakra UI
 -   **주요 기능:** 다양한 텍스트 케이스(snake_case, kebab-case, camelCase 등) 변환
 
-### 2. [gemini-cli](./gemini-cli/)
+### 2. [wand](./wand/)
+
+Windows 및 Android용 크로스플랫폼 터미널 애플리케이션 (개발 중).
+
+-   **주요 기술:** Kotlin, Compose Multiplatform
+-   **주요 기능:** (개발 예정)
+
+### 3. [gemini-cli](./gemini-cli/)
 
 Gemini CLI 도구의 설치 및 환경 설정 가이드를 포함하는 디렉토리입니다.
 
