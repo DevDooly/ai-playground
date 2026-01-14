@@ -1,28 +1,48 @@
-# Wand Project To-Do List
+# Wand 프로젝트 To-Do 리스트
 
-## 현재 문제점
+## 1. 기본 UI 구조 설계 (Compose Multiplatform)
+- [ ] **(공통) `TerminalView` 컴포저블 생성:**
+    - [ ] 명령어 이력(history)을 표시할 `LazyColumn` 구현
+    - [ ] 명령어 입력을 위한 `TextField` 구현
+    - [ ] 현재 경로(current path)를 표시할 `Text` 구현
+- [ ] **(Android) `MainActivity.kt` 설정:**
+    - [ ] `TerminalView`를 포함하도록 `setContent` 업데이트
+- [ ] **(Desktop) `Main.kt` 설정:**
+    - [ ] `TerminalView`를 포함하도록 `Window` content 업데이트
 
-*   **JVM Target 호환성 문제 해결:** `shared` 모듈의 Android 컴파일 시 JVM 1.8과 JVM 17 간의 대상 버전 불일치로 빌드 실패. Kotlin 및 Java 컴파일러가 동일한 JVM 버전을 (가급적 JVM 17) 사용하도록 설정해야 함.
+## 2. 핵심 상태 관리 로직 구현 (공통 모듈: `shared`)
+- [ ] **`TerminalState` 데이터 클래스 또는 ViewModel 생성:**
+    - [ ] 명령어 이력 (`List<String>`)
+    - [ ] 현재 경로 (`String`)
+    - [ ] 사용자 입력 (`String`)
+- [ ] **상태 업데이트 로직 구현:**
+    - [ ] `TextField` 입력에 따라 `userInput` 상태 업데이트
+    - [ ] 명령어 실행 시 `history`에 명령어와 결과 추가
+    - [ ] 명령어 실행 후 `userInput` 초기화
 
-## 개발 계획
+## 3. 명령어 실행 로직 구현 (Platform-specific)
+- [ ] **(공통) `CommandExecutor` 인터페이스 정의:**
+    - `suspend fun execute(command: String): String`
+- [ ] **(Android) `AndroidCommandExecutor` 구현:**
+    - [ ] `Runtime.getRuntime().exec()` 또는 다른 방법을 사용하여 셸 명령어 실행
+    - [ ] `/system/bin/sh`를 사용하여 명령어 실행
+    - [ ] 결과(stdout, stderr)를 문자열로 반환
+    - *참고: Android의 샌드박스 환경으로 인해 권한 및 파일 접근에 제약이 있을 수 있음*
+- [ ] **(Desktop) `DesktopCommandExecutor` 구현:**
+    - [ ] `java.lang.ProcessBuilder`를 사용하여 프로세스 생성
+    - [ ] OS에 따라 `cmd.exe /c` (Windows) 또는 `/bin/bash -c` (Linux/macOS)를 사용하여 명령어 실행
+    - [ ] 결과(stdout, stderr)를 문자열로 반환
+- [ ] **Dependency Injection 설정:**
+    - [ ] `expect/actual` 키워드를 사용하여 각 플랫폼에 맞는 `CommandExecutor` 주입
 
-1.  **프로젝트 설정:**
-    *   Compose Multiplatform 프로젝트 기본 구조를 설정합니다.
-    *   Android 및 Windows 데스크톱용 빌드 구성을 완료합니다.
+## 4. UI와 핵심 로직 연결
+- [ ] `TerminalView`에서 `TerminalState`를 관찰(observe)하여 UI 업데이트
+- [ ] `TextField`에서 엔터 키 입력 시 `CommandExecutor`를 사용하여 명령어 실행
+- [ ] 실행 결과를 `TerminalState`에 반영하여 UI에 표시
 
-2.  **핵심 로직 개발 (공통 모듈):**
-    *   터미널 명령어 파싱 및 실행 로직을 구현합니다.
-    *   상태 관리 (현재 경로, 명령어 히스토리 등) 로직을 개발합니다.
-    *   파일 시스템 접근 및 기타 시스템 상호작용을 위한 인터페이스를 정의합니다.
-
-3.  **UI 개발:**
-    *   **Android:** Jetpack Compose를 사용하여 모바일에 최적화된 터미널 UI를 구현합니다.
-    *   **Windows:** Compose for Desktop을 사용하여 데스크톱 환경에 맞는 UI를 구현합니다.
-    *   공통 UI 컴포넌트 (예: 명령어 입력창, 결과 출력 화면)를 최대한 공유합니다.
-
-4.  **플랫폼별 기능 구현:**
-    *   각 플랫폼(Windows, Android)의 특성에 맞는 추가 기능을 구현합니다. (예: Windows의 경우 PowerShell/CMD 통합, Android의 경우 Termux API 연동 등)
-
-5.  **테스트 및 배포:**
-    *   단위 테스트 및 UI 테스트를 작성하여 안정성을 확보합니다.
-    *   각 플랫폼 스토어에 배포하기 위한 패키징을 진행합니다.
+## 5. 고급 기능 및 개선
+- [ ] 명령어 히스토리 탐색 (위/아래 화살표 키)
+- [ ] 자동 스크롤 기능 구현
+- [ ] UI 스타일링 및 테마 적용 (Material Design)
+- [ ] 명령어 자동 완성 기능 (선택 사항)
+- [ ] 탭(Tab) 기능 구현 (여러 터미널 세션)
