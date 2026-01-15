@@ -25,12 +25,19 @@ Gemini CLI 도구의 설치 및 환경 설정 가이드를 포함하는 디렉�
 -   `install.md`: Gemini CLI 설치 절차 문서
 -   `setup-github-ssh.sh`: GitHub SSH 키 설정 및 등록을 위한 셸 스크립트
 
-### 3. [kind](./kind/)
+### 4. [kind](./kind/)
 
 Kind (Kubernetes in Docker)를 사용하여 로컬 환경에 쿠버네티스 클러스터를 구축하고 테스트하는 프로젝트입니다.
 
 -   **주요 기술:** Kubernetes, Docker, Kind, NGINX
 -   **주요 내용:** Kind 클러스터 설정, Ingress Controller 배포, 테스트용 NGINX 애플리케이션 배포 가이드
+
+### 5. [telegram-bot](./telegram-bot/)
+
+주요 증시 지수 및 환율, 특정 주식 종목 조회 등 증시 정보를 요약하여 텔레그램으로 알림을 보내는 봇입니다.
+
+-   **주요 기술:** Python (예상), Telegram Bot API
+-   **주요 기능:** S&P 500, 나스닥/QQQ, 환율 정보, VIX 지수, 특정 주식 종목 조회
 
 ---
 
