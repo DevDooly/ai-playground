@@ -25,3 +25,4 @@ Thumbs.db
 *.hprof
 
 \n# Environment variables\n**/.env
+\n# Log files\n*.log\nnohup.out\n\n# Test files\ntest_runner.py

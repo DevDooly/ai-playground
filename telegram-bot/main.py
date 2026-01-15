@@ -6,13 +6,23 @@ from telegram.ext import Application, CommandHandler, ContextTypes
 
 # 로깅 설정
 logging.basicConfig(
+    level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    level=logging.INFO
+    handlers=[
+        logging.FileHandler("telegram-bot/bot.log"),
+        logging.StreamHandler() # 터미널에도 로그를 출력하려면 이 줄을 유지
+    ]
 )
 logger = logging.getLogger(__name__)
 
 # .env 파일에서 환경 변수 로드
-load_dotenv()
+# 스크립트 파일의 절대 경로를 기준으로 .env 파일의 경로를 지정
+dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
+if os.path.exists(dotenv_path):
+    load_dotenv(dotenv_path)
+    logger.info(".env 파일을 로드했습니다.")
+else:
+    logger.warning(".env 파일을 찾을 수 없습니다. 환경 변수를 직접 설정해야 합니다.")
 
 # --- 명령어 핸들러 함수 ---
 
