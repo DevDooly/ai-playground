@@ -24,3 +24,4 @@ Thumbs.db
 *.sw?
 *.hprof
 
+\n# Environment variables\n**/.env
