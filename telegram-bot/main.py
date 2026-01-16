@@ -10,7 +10,7 @@ logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler("telegram-bot/bot.log"),
+        logging.FileHandler("bot.log"),
         logging.StreamHandler() # 터미널에도 로그를 출력하려면 이 줄을 유지
     ]
 )
