@@ -2,8 +2,9 @@ import os
 import logging
 from dotenv import load_dotenv
 from telegram import Update
-from telegram.ext import Application, CommandHandler, ContextTypes
+from telegram.ext import Application, CommandHandler, ContextTypes, MessageHandler, filters
 import yfinance as yf
+import pandas as pd
 
 # 로깅 설정
 logging.basicConfig(
@@ -39,15 +40,17 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
     """/help 명령어 응답"""
     help_text = """
     **사용 가능한 명령어 목록:**
-    /start - 봇 시작
-    /help - 도움말 보기
+    /start, /시작 - 봇 시작
+    /help, /도움말 - 도움말 보기
+    /sp500, /에스엔피500 - S&P 500 지수 조회
+    /nasdaq, /나스닥 - 나스닥 지수 조회
+    /vix, /빅스 - VIX 지수 조회
+    /exchange, /환율 - 환율 정보 조회 (USD/KRW)
+    /stock, /주식 <티커> - 개별 종목 조회
     
     *추가될 기능:*
-    `/sp500` - S&P 500 지수 조회
-    `/nasdaq` - 나스닥 지수 조회
-    `/vix` - VIX 지수 조회
-    `/exchange` - 환율 정보 조회
-    `/stock <티커>` - 개별 종목 조회
+    - 정기 알림 기능
+    - 사용자 포트폴리오 관리
     """
     await update.message.reply_text(help_text, parse_mode='Markdown')
 
@@ -151,16 +154,29 @@ def format_stock_data(data: dict) -> str:
 async def get_stock_info(ticker_symbol: str) -> dict:
     """
     yfinance를 사용하여 특정 티커 심볼의 현재 주식 정보를 가져옵니다.
+    history()를 사용하여 현재가를 더 안정적으로 가져옵니다.
     """
     ticker = yf.Ticker(ticker_symbol)
     try:
-        # 주요 정보와 현재 가격 정보를 가져옵니다.
         info = ticker.info
         
-        # 필요한 정보 추출 (예시)
-        # 모든 티커가 모든 정보를 가지고 있는 것은 아니므로, 존재 여부 확인
-        current_price = info.get('currentPrice')
+        # history()는 더 신뢰할 수 있는 가격 소스(특히 지수의 경우)
+        hist = ticker.history(period="5d")
+        
+        current_price = None
+        if not hist.empty:
+            # 마지막 거래일의 종가를 현재가로 사용
+            current_price = hist['Close'].iloc[-1]
+        
+        # Fallback in case history is empty or fails
+        if current_price is None:
+            current_price = info.get('currentPrice') or info.get('regularMarketPrice')
+
         previous_close = info.get('previousClose')
+        # Fallback for previous_close
+        if previous_close is None and len(hist) > 1:
+            previous_close = hist['Close'].iloc[-2]
+            
         open_price = info.get('open')
         day_high = info.get('dayHigh')
         day_low = info.get('dayLow')
@@ -191,6 +207,32 @@ async def get_stock_info(ticker_symbol: str) -> dict:
         logger.error(f"Error fetching data for {ticker_symbol}: {e}")
         return {"error": f"'{ticker_symbol}'에 대한 정보를 가져오는 데 실패했습니다. 티커 심볼을 확인해주세요."}
 
+
+# --- 한글 명령어 라우터 ---
+async def korean_command_router(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """한글 명령어를 감지하고 적절한 함수로 라우팅합니다."""
+    text = update.message.text
+    command = text.split()[0][1:]  # 명령어 부분만 추출 (예: /주식)
+
+    # 한글 명령어와 함수를 매핑
+    command_map = {
+        "시작": start,
+        "도움말": help_command,
+        "에스엔피500": sp500_command,
+        "나스닥": nasdaq_command,
+        "빅스": vix_command,
+        "환율": exchange_command,
+        "주식": stock_command,
+    }
+
+    if command in command_map:
+        # '/주식' 명령어의 경우, 인자를 context.args에 저장
+        if command == "주식":
+            context.args = text.split()[1:]
+        
+        # 매핑된 함수 호출
+        await command_map[command](update, context)
+
 # --- 봇의 메인 실행 함수 ---
 
 def main() -> None:
@@ -205,7 +247,7 @@ def main() -> None:
     # 애플리케이션 생성
     application = Application.builder().token(token).build()
 
-    # 명령어 핸들러 등록
+    # 영어 명령어 핸들러 등록
     application.add_handler(CommandHandler("start", start))
     application.add_handler(CommandHandler("help", help_command))
     application.add_handler(CommandHandler("sp500", sp500_command))
@@ -213,6 +255,11 @@ def main() -> None:
     application.add_handler(CommandHandler("vix", vix_command))
     application.add_handler(CommandHandler("stock", stock_command))
     application.add_handler(CommandHandler("exchange", exchange_command))
+
+    # 한글 명령어 핸들러 등록
+    korean_commands = ["시작", "도움말", "에스엔피500", "나스닥", "빅스", "환율", "주식"]
+    regex_pattern = r'^/(' + '|'.join(korean_commands) + r')'
+    application.add_handler(MessageHandler(filters.Regex(regex_pattern), korean_command_router))
 
     # 봇 실행 (폴링 방식)
     logger.info("봇을 시작합니다...")
