@@ -5,6 +5,10 @@ from telegram import Update
 from telegram.ext import Application, CommandHandler, ContextTypes, MessageHandler, filters
 import yfinance as yf
 import pandas as pd
+import httpx
+from urllib.parse import quote
+
+ticker_cache = {}
 
 # 로깅 설정
 logging.basicConfig(
@@ -36,6 +40,8 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         f"저는 증시 정보를 알려주는 봇입니다. /help 명령어로 사용법을 확인하세요."
     )
 
+# --- 명령어 핸들러 함수 ---
+
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """/help 명령어 응답"""
     help_text = """
@@ -46,13 +52,60 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
     /nasdaq, /나스닥 - 나스닥 지수 조회
     /vix, /빅스 - VIX 지수 조회
     /exchange, /환율 - 환율 정보 조회 (USD/KRW)
-    /stock, /주식 <티커> - 개별 종목 조회
+    /stock, /주식 <종목명 또는 티커> - 개별 종목 조회
     
     *추가될 기능:*
     - 정기 알림 기능
     - 사용자 포트폴리오 관리
     """
     await update.message.reply_text(help_text, parse_mode='Markdown')
+
+# --- 금융 데이터 검색 및 조회 함수 ---
+
+async def find_ticker(query: str) -> dict | None:
+    """입력된 쿼리(종목명 또는 티커)로 가장 적합한 티커 심볼을 찾습니다."""
+    if query in ticker_cache:
+        logger.info(f"Found ticker in cache for query: {query}")
+        return ticker_cache[query]
+
+    logger.info(f"Searching ticker for query: {query}")
+    encoded_query = quote(query)
+    url = f"https://query1.finance.yahoo.com/v1/finance/search?q={encoded_query}"
+    
+    # 429 Too Many Requests 방지를 위해 User-Agent 설정
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+    }
+
+    try:
+        async with httpx.AsyncClient() as client:
+            response = await client.get(url, headers=headers)
+            response.raise_for_status()
+            data = response.json()
+
+        quotes = data.get('quotes', [])
+        if not quotes:
+            return None
+
+        # 가장 관련성 높은 결과 선택 (주식 우선, 없으면 다음)
+        best_result = next((q for q in quotes if q.get('quoteType') == 'EQUITY'), None)
+        if not best_result:
+            best_result = next((q for q in quotes if q.get('symbol')), None)
+        
+        if not best_result:
+            return None
+
+        symbol = best_result.get('symbol')
+        long_name = best_result.get('longname', best_result.get('shortname', ''))
+        
+        result = {"symbol": symbol, "name": long_name}
+        ticker_cache[query] = result  # 캐시에 저장
+        logger.info(f"Found ticker: {symbol} for query: {query}")
+        return result
+
+    except Exception as e:
+        logger.error(f"Error finding ticker for {query}: {e}")
+        return None
 
 async def fetch_index_data(update: Update, context: ContextTypes.DEFAULT_TYPE, ticker_symbol: str, index_name: str) -> None:
     """공통 인덱스 데이터 조회 및 응답 함수"""
@@ -79,21 +132,33 @@ async def vix_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
     await fetch_index_data(update, context, "^VIX", "VIX")
 
 async def stock_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    """/stock <티커> 명령어 응답"""
+    """/stock <종목명 또는 티커> 명령어 응답"""
     if not context.args:
-        await update.message.reply_text("사용법: `/stock <티커심볼>`", parse_mode='Markdown')
+        await update.message.reply_text("사용법: `/stock <종목명 또는 티커>`", parse_mode='Markdown')
         return
 
-    ticker_symbol = context.args[0].upper()
-    logger.info(f"Fetching stock data for {ticker_symbol} by {update.effective_user.id}")
+    query = ' '.join(context.args)
+    sent_message = await update.message.reply_text(f"'{query}'에 대한 정보를 검색 중입니다...")
+
+    ticker_info = await find_ticker(query)
+
+    if not ticker_info:
+        await sent_message.edit_text(f"'{query}'에 해당하는 종목을 찾을 수 없습니다. 종목명이나 티커를 확인해주세요.")
+        return
+
+    ticker_symbol = ticker_info['symbol']
+    logger.info(f"Fetching stock data for {ticker_symbol} ({query}) by {update.effective_user.id}")
+    
     data = await get_stock_info(ticker_symbol)
 
     if data.get("error"):
-        await update.message.reply_text(data["error"])
+        await sent_message.edit_text(data["error"])
         return
+    
+    data['shortName'] = ticker_info.get('name', data.get('shortName'))
 
     message = format_stock_data(data)
-    await update.message.reply_text(message, parse_mode='Markdown')
+    await sent_message.edit_text(message, parse_mode='Markdown')
 
 async def exchange_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """/exchange 명령어 응답 (USD/KRW)"""
@@ -114,17 +179,21 @@ def format_exchange_rate_data(data: dict) -> str:
     change = data.get("change")
     change_percent = data.get("changePercent")
     
-    price_str = f"{current_price:,.2f}" if current_price else "N/A"
+    price_str = f"{current_price:,.2f}" if current_price is not None else "N/A"
     change_str = ""
     if change is not None and change_percent is not None:
         sign = "+" if change >= 0 else ""
         change_str = f" ({sign}{change:,.2f} / {sign}{change_percent:,.2f}%)"
 
+    open_price = data.get('open')
+    day_high = data.get('dayHigh')
+    day_low = data.get('dayLow')
+
     message = f"*{short_name} 환율*\n" \
               f"현재가: {price_str}원{change_str}\n" \
-              f"시가: {data.get('open', 'N/A'):,.2f}원\n" \
-              f"고가: {data.get('dayHigh', 'N/A'):,.2f}원\n" \
-              f"저가: {data.get('dayLow', 'N/A'):,.2f}원"
+              f"시가: {open_price:,.2f}원\n" if open_price is not None else "" \
+              f"고가: {day_high:,.2f}원\n" if day_high is not None else "" \
+              f"저가: {day_low:,.2f}원" if day_low is not None else ""
     return message
 
 def format_stock_data(data: dict) -> str:
@@ -135,20 +204,30 @@ def format_stock_data(data: dict) -> str:
     change_percent = data.get("changePercent")
     currency = data.get("currency", "")
 
-    price_str = f"{current_price:,.2f} {currency}" if current_price else "N/A"
+    price_str = f"{current_price:,.2f} {currency}" if current_price is not None else "N/A"
     change_str = ""
     if change is not None and change_percent is not None:
         sign = "+" if change >= 0 else ""
         change_str = f" ({sign}{change:,.2f} / {sign}{change_percent:,.2f}%)"
 
+    open_price = data.get('open')
+    day_high = data.get('dayHigh')
+    day_low = data.get('dayLow')
+    volume = data.get('volume')
+
     message = f"*{short_name}*\n" \
-              f"현재가: {price_str}{change_str}\n" \
-              f"시가: {data.get('open', 'N/A'):,.2f} {currency}\n" \
-              f"고가: {data.get('dayHigh', 'N/A'):,.2f} {currency}\n" \
-              f"저가: {data.get('dayLow', 'N/A'):,.2f} {currency}\n" \
-              f"거래량: {data.get('volume', 'N/A'):,}"
+              f"현재가: {price_str}{change_str}\n"
     
-    return message
+    if open_price is not None:
+        message += f"시가: {open_price:,.2f} {currency}\n"
+    if day_high is not None:
+        message += f"고가: {day_high:,.2f} {currency}\n"
+    if day_low is not None:
+        message += f"저가: {day_low:,.2f} {currency}\n"
+    if volume is not None:
+        message += f"거래량: {volume:,}"
+    
+    return message.strip()
 
 # --- 금융 데이터 조회 함수 ---
 async def get_stock_info(ticker_symbol: str) -> dict:
